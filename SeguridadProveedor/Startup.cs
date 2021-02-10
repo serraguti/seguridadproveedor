@@ -11,7 +11,13 @@ using Microsoft.Extensions.Hosting;
 using SeguridadProveedor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Authentication.Cookies;
+/*
+ Valor:
+4-UnWh3NTk8f6we-Zc9-WY1oq.4TKiUA.Z
+Id: 
+40f53eb1-769e-47a3-a46e-fbb85dfbdcec
+ */
 namespace MvcCore
 {
     public class Startup
@@ -31,22 +37,32 @@ namespace MvcCore
             //DEBEMOS INDICAR QUE UTILIZAREMOS SERVICIOS
             //DE TERCEROS PARA LA AUTENTICACION
             //services.AddDefaultIdentity
-            services.AddIdentityCore<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentityCore<IdentityUser>(
+                options => options.SignIn.RequireConfirmedAccount = true)
+       .AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddIdentityCore<IdentityUser>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
             //INDICAMOS QUE UTILIZAREMOS LA AUTENTICACION
             //DEL PROVEEDOR MICROSOFT
             //services.AddAuthenticacion().AddProvider
             //EN EL MOMENTO DE INDICAR EL PROVEEDOR, NOS
             //PIDE LAS CLAVES
-            services.AddAuthentication()
-                .AddMicrosoftAccount
-                (microsoftOptions =>
-                {
-                    microsoftOptions.ClientId = "40f53eb1-769e-47a3-a46e-fbb85dfbdcec";
-                    microsoftOptions.ClientSecret = "4-UnWh3NTk8f6we-Zc9-WY1oq.4TKiUA.Z";
-                });
-                
-            services.AddControllersWithViews();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie()
+            .AddMicrosoftAccount
+            (microsoftOptions =>
+            {
+                microsoftOptions.ClientId = "40f53eb1-769e-47a3-a46e-fbb85dfbdcec";
+                microsoftOptions.ClientSecret = "4-UnWh3NTk8f6we-Zc9-WY1oq.4TKiUA.Z";
+            });
+
+
+            services.AddControllersWithViews
+                (options => options.EnableEndpointRouting = false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,19 +72,29 @@ namespace MvcCore
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseStaticFiles();
             app.UseAuthentication();
-
-            app.UseEndpoints(endpoints =>
+            //app.UseAuthorization();
+            
+            
+            app.UseMvc(routes =>
             {
-                endpoints.MapControllerRoute(
+                routes.MapRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}"
-                );
+                    template: "{controller=Home}/{action=Index}/{id?}"
+                    );
             });
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Index}/{id?}"
+            //    );
+            //});
         }
     }
 }
