@@ -38,7 +38,8 @@ namespace MvcCore
             //DE TERCEROS PARA LA AUTENTICACION
             services.AddDefaultIdentity<IdentityUser>()
        .AddEntityFrameworkStores<ApplicationDbContext>();
-            
+            //id app: bf7accfe-a7ee-4200-be68-b452cc396467
+            //Secret Key: z89dOpFWPX4U1nhkpwy_.OWkF~qAjy_gFg
             services.AddAuthentication()
             .AddMicrosoftAccount
             (microsoftOptions =>
