@@ -48,7 +48,6 @@ namespace MvcCore
                 microsoftOptions.ClientSecret = "4-UnWh3NTk8f6we-Zc9-WY1oq.4TKiUA.Z";
             });
 
-
             services.AddControllersWithViews
                 (options => options.EnableEndpointRouting = false);
         }
