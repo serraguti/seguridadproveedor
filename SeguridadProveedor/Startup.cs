@@ -36,27 +36,14 @@ namespace MvcCore
                 (options => options.UseSqlServer(cadenasql));
             //DEBEMOS INDICAR QUE UTILIZAREMOS SERVICIOS
             //DE TERCEROS PARA LA AUTENTICACION
-            //services.AddDefaultIdentity
-            services.AddIdentityCore<IdentityUser>(
-                options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>()
        .AddEntityFrameworkStores<ApplicationDbContext>();
-            //services.AddIdentityCore<IdentityUser>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-            //INDICAMOS QUE UTILIZAREMOS LA AUTENTICACION
-            //DEL PROVEEDOR MICROSOFT
-            //services.AddAuthenticacion().AddProvider
-            //EN EL MOMENTO DE INDICAR EL PROVEEDOR, NOS
-            //PIDE LAS CLAVES
-            services.AddAuthentication(options =>
-            {
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie()
+            
+            services.AddAuthentication()
             .AddMicrosoftAccount
             (microsoftOptions =>
             {
-                microsoftOptions.ClientId = "40f53eb1-769e-47a3-a46e-fbb85dfbdcec";
+                microsoftOptions.ClientId = "671b9023-0034-4dee-85d4-05a23628ea37";
                 microsoftOptions.ClientSecret = "4-UnWh3NTk8f6we-Zc9-WY1oq.4TKiUA.Z";
             });
 
@@ -77,7 +64,7 @@ namespace MvcCore
 
             app.UseStaticFiles();
             app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthorization();
             
             
             app.UseMvc(routes =>
@@ -87,14 +74,6 @@ namespace MvcCore
                     template: "{controller=Home}/{action=Index}/{id?}"
                     );
             });
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllerRoute(
-            //        name: "default",
-            //        pattern: "{controller=Home}/{action=Index}/{id?}"
-            //    );
-            //});
         }
     }
 }
